@@ -1,5 +1,4 @@
 plugins {
-    id 'com.github.johnrengelman.shadow' version '4.0.4'
     id 'java'
     id 'signing'
     id 'maven-publish'
@@ -22,10 +21,4 @@ dependencies {
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
 
-}
-
-jar {
-    manifest {
-        attributes 'Main-Class': 'com.gopai.cli.PAIReportDownloader'
-    }
 }

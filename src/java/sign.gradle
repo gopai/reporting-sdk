@@ -24,7 +24,7 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 }
 
 artifacts {
-    archives shadowJar
+    archives jar
     archives sourceJar
     archives javadocJar
 }
@@ -35,47 +35,45 @@ signing {
 
 publishing {
     publications {
-        shadow(MavenPublication) {
-            publication ->
-                project.shadow.component(publication)
-                customizePom(pom)
+        mavenJava(MavenPublication) {
+            customizePom(pom)
 
-                groupId 'com.gopai'
-                artifactId 'reporting-sdk'
-                version '1.0.0'
+            groupId 'com.gopai'
+            artifactId 'reporting-sdk'
+            version '1.0.0'
 
-                from components.java
+            from components.java
 
-                // create the sign pom artifact
-                pom.withXml {
-                    def pomFile = file("${project.buildDir}/generated-pom.xml")
-                    writeTo(pomFile)
-                    def pomAscFile = signing.sign(pomFile).signatureFiles[0]
-                    artifact(pomAscFile) {
+            // create the sign pom artifact
+            pom.withXml {
+                def pomFile = file("${project.buildDir}/generated-pom.xml")
+                writeTo(pomFile)
+                def pomAscFile = signing.sign(pomFile).signatureFiles[0]
+                artifact(pomAscFile) {
+                    classifier = null
+                    extension = 'pom.asc'
+                }
+            }
+
+            artifact(sourceJar) {
+                classifier = 'sources'
+            }
+            artifact(javadocJar) {
+                classifier = 'javadoc'
+            }
+
+            // create the signed artifacts
+            project.tasks.signArchives.signatureFiles.each {
+                artifact(it) {
+                    def matcher = it.file =~ /-(sources|javadoc)\.jar\.asc$/
+                    if (matcher.find()) {
+                        classifier = matcher.group(1)
+                    } else {
                         classifier = null
-                        extension = 'pom.asc'
                     }
+                    extension = 'jar.asc'
                 }
-
-                artifact(sourceJar) {
-                    classifier = 'sources'
-                }
-                artifact(javadocJar) {
-                    classifier = 'javadoc'
-                }
-
-                // create the signed artifacts
-                project.tasks.signArchives.signatureFiles.each {
-                    artifact(it) {
-                        def matcher = it.file =~ /-(sources|javadoc)\.jar\.asc$/
-                        if (matcher.find()) {
-                            classifier = matcher.group(1)
-                        } else {
-                            classifier = null
-                        }
-                        extension = 'jar.asc'
-                    }
-                }
+            }
         }
     }
     repositories {
@@ -92,13 +90,7 @@ publishing {
 def customizePom(pom) {
     pom.withXml {
         def root = asNode()
-        root.'dependencies'.findAll() .each() {
-            it.parent().remove(it)
-        }
-
-
-        root.children().last() + {
-            resolveStrategy = Closure.DELEGATE_FIRST
+          root.children().last() + {
 
             description 'PAI Report Client SDK'
             name 'reporting-sdk'
@@ -133,13 +125,13 @@ def customizePom(pom) {
 }
 
 model {
-    tasks.generatePomFileForShadowPublication {
+    tasks.generatePomFileForMavenJavaPublication {
         destination = file("$buildDir/generated-pom.xml")
     }
-    tasks.publishShadowPublicationToMavenLocal {
+    tasks.publishMavenJavaPublicationToMavenLocal  {
         dependsOn project.tasks.signArchives
     }
-    tasks.publishShadowPublicationToMavenRepository {
+    tasks.publishMavenJavaPublicationToMavenRepository  {
         dependsOn project.tasks.signArchives
     }
 }
