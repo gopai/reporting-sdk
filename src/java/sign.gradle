@@ -90,7 +90,8 @@ publishing {
 def customizePom(pom) {
     pom.withXml {
         def root = asNode()
-          root.children().last() + {
+        root.children().last() + {
+            resolveStrategy = Closure.DELEGATE_FIRST
 
             description 'PAI Report Client SDK'
             name 'reporting-sdk'
@@ -128,10 +129,10 @@ model {
     tasks.generatePomFileForMavenJavaPublication {
         destination = file("$buildDir/generated-pom.xml")
     }
-    tasks.publishMavenJavaPublicationToMavenLocal  {
+    tasks.publishMavenJavaPublicationToMavenLocal {
         dependsOn project.tasks.signArchives
     }
-    tasks.publishMavenJavaPublicationToMavenRepository  {
+    tasks.publishMavenJavaPublicationToMavenRepository {
         dependsOn project.tasks.signArchives
     }
 }
