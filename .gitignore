@@ -1,0 +1,6 @@
+src/java/build/**
+src/java/.gradle/**
+src/java/gradle/**
+src/java/.idea**
+.idea/**
+.out/**
