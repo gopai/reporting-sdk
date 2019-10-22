@@ -1,5 +1,5 @@
 # reporting-sdk
-The Reporting SDK contains our implementation of our Report and Data API Client. This gives users a solid access point for interacting with [PAI Reports](paireports.com) and the report data available to the user.
+The Reporting SDK contains our implementation of our Report and Data API Client. This gives users a solid access point for interacting with [PAI Reports](https://www.paireports.com/myreports/GetLogin.event) and the report data available to the user.
 
 One of the easiest ways to retrieve data is through the Report API. This API is designed around a standard HTTP request process and will allow access to any data that a user can access through the screens provided within PAI Reports. Using this SDK, you can develop applications that utilize the huge amount of data that PAI Reports collects and stores to build new data integrations.
 
