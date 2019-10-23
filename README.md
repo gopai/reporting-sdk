@@ -1,16 +1,14 @@
 # reporting-sdk
-The Reporting SDK contains our implementation of our Report and Data API Client. This gives users a solid access point for interacting with [PAI Reports](https://www.paireports.com/myreports/GetLogin.event) and the report data available to the user.
+The Reporting SDK contains our implementation of a client which gives access to our Report and Data API. This gives users a solid access point for interacting with [PAI Reports](https://www.paireports.com/myreports/GetLogin.event) and the report data available to the user.
 
-One of the easiest ways to retrieve data is through the Report API. This API is designed around a standard HTTP request process and will allow access to any data that a user can access through the screens provided within PAI Reports. Using this SDK, you can develop applications that utilize the huge amount of data that PAI Reports collects and stores to build new data integrations.
+The API is designed around a standard HTTP request process and will allow access to any data that a user can access through the screens provided within PAI Reports. Using this SDK, you can develop applications that utilize the large amount of data that PAI Reports possesses to build new data integrations.
 
 ## Usage
-This SDK is based on standard HTTP practices and primarily uses key-value pairs for passing filters, sort orders, and report selections. 
-
 The PAIClient class is used to substantiate a session to PAI Reports and provides mechanisms for running reports and queries.
 
 The ReportRequest class allows for filtering, sorting, and adjusting the number of columns produced in response to your requests to make it easier for your applications to digest the data.
 
-The ReportConfig class allows you to see the columns, types, and acceptable values of a given report to allow you to properly construct your filters.
+The ReportConfig class allows you to see the columns, types, format, and acceptable values of a given report to allow you to properly construct your filters.
 
 The StreamUtil class is a simple support class to convert the output data into a desired form.
 
