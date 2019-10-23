@@ -6,14 +6,14 @@ The API is designed around a standard HTTP request process and will allow access
 ## Usage
 The PAIClient class is used to substantiate a session to PAI Reports and provides mechanisms for running reports and queries.
 
-The ReportRequest class allows for filtering, sorting, and adjusting the number of columns produced in response to your requests to make it easier for your applications to digest the data.
+The ReportRequest class allows for filtering, sorting, and adjusting the number of columns in your requests to make it easier for your applications to digest the response data.
 
 The ReportConfig class allows you to see the columns, types, format, and acceptable values of a given report to allow you to properly construct your filters.
 
 The StreamUtil class is a simple support class to convert the output data into a desired form.
 
 ### Available commands
-The [Wiki](https://github.com/gopai/reporting-sdk/wiki) describes the available commands.
+The [Wiki](https://github.com/gopai/reporting-sdk/wiki) describes the available commands and the Report API Documentation.
 
 ## Installation
 The reporting-sdk is available on the Maven Central Repository, [reporting-sdk](https://search.maven.org/artifact/com.gopai/reporting-sdk). Importing from maven will depend on the build for the project.
