@@ -2,6 +2,7 @@ package com.gopai.pair.sdk.v1;
 
 import com.google.gson.Gson;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -82,17 +83,8 @@ public class PAIClient implements AutoCloseable {
      * @throws IOException From the Response.
      */
     public InputStream retrieveReportUsingGUID(String guid) throws IOException {
-        RequestBuilder r = builder("Report.event", "POST")
-                .addParameter("ReportGUID", guid)
-                .addParameter("ReportCmd", "CustomCommand")
-                .setHeader("Accept", "application/text");
-
-        return httpclient.execute(
-                r.build(),
-                response -> {
-                    return new ByteArrayInputStream(StreamUtil.read(response.getEntity().getContent()));
-                }
-        );
+        ReportRequest reportRequest = new ReportRequest().setReportGUID(guid);
+        return retrieveReportUsingBuilder(reportRequest);
     }
 
     /**
@@ -125,11 +117,7 @@ public class PAIClient implements AutoCloseable {
      * @throws IOException From the Response.
      */
     public InputStream runQuery(String query) throws IOException {
-        return httpclient.execute(builder("Query.event", "POST")
-                        .setHeader("Accept", "*/*")
-                        .addParameter("query", query)
-                        .build(),
-
+        return httpclient.execute(createQueryHttpRequest(query),
                 response -> {
                     return new ByteArrayInputStream(StreamUtil.read(response.getEntity().getContent()));
                 }
@@ -139,25 +127,20 @@ public class PAIClient implements AutoCloseable {
     /**
      * Runs a query against the database and returns results in the specified form.
      *
-     * @param query The query to be executed.
+     * @param query               The query to be executed.
      * @param expectedReturnClass What you expect back from the query response.
-     * @param <DesiredType> The type you expect back from the query response.
+     * @param <DesiredType>       The type you expect back from the query response.
      * @return The query results formatted to the desired type.
      * @throws IOException From the Response.
      */
     public <DesiredType> DesiredType runQuery(String query, Class<DesiredType> expectedReturnClass) throws IOException {
-        return httpclient.execute(builder("Query.event", "POST")
-                        .setHeader("Accept", "*/*")
-                        .addParameter("query", query)
-                        .build(),
-
+        return httpclient.execute(createQueryHttpRequest(query),
                 response -> {
                     String json = new String(StreamUtil.read(response.getEntity().getContent()));
                     return new Gson().fromJson(json, expectedReturnClass);
                 }
         );
     }
-
 
     /**
      * This method sends a heartbeat.event request to the server to identify if the session is still live.
@@ -203,5 +186,12 @@ public class PAIClient implements AutoCloseable {
                 .setHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
                 .setHeader("PAIClient-SDK", "1.0.0")
                 .setUri(URI.create(BASE_URL + endpoint));
+    }
+
+    private HttpUriRequest createQueryHttpRequest(String query) {
+        return builder("Query.event", "POST")
+                .setHeader("Accept", "*/*")
+                .addParameter("query", query)
+                .build();
     }
 }
