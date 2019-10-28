@@ -23,7 +23,7 @@ public class ReportRequestTest {
                 .setName("Username")
                 .setFilter("name").build()
                 .build();
-        assertThat(reportRequest.toString(), is("F_Username=name&ED_Username=true"));
+        assertThat(reportRequest.toString(), is("F_Username=name&E_Username=true"));
     }
 
     @Test
@@ -54,7 +54,7 @@ public class ReportRequestTest {
                 .setFilter("department")
                 .build()
                 .build();
-        assertThat(reportRequest.toString(), is("F_Username=name&ED_Username=true&F_Business=business&ED_Business=true&F_Cust#=cust#&ED_Cust#=true&F_Type=type&ED_Type=true&F_Name=name&ED_Name=true&F_Department=department&ED_Department=true"));
+        assertThat(reportRequest.toString(), is("F_Username=name&E_Username=true&F_Business=business&E_Business=true&F_Cust#=cust#&E_Cust#=true&F_Type=type&E_Type=true&F_Name=name&E_Name=true&F_Department=department&E_Department=true"));
     }
 
 }

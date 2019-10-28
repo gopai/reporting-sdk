@@ -100,7 +100,7 @@ public class ReportRequest {
     @Override
     public String toString() {
         return columns.stream()
-                .map((column) -> "F_" + column.getName() + "=" + column.getFilter() + "&ED_" + column.getName() + "=" + column.getVisible())
+                .map((column) -> "F_" + column.getName() + "=" + column.getFilter() + "&E_" + column.getName() + "=" + column.getVisible())
                 .collect(joining("&"));
     }
 

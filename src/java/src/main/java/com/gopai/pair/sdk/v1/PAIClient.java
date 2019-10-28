@@ -65,7 +65,7 @@ public class PAIClient implements AutoCloseable {
 
         for (ReportRequest.Column column : reportRequest.getColumns()) {
             r.addParameter("F_" + column.getName(), column.getFilter());
-            r.addParameter("ED_" + column.getName(), String.valueOf(column.getVisible()));
+            r.addParameter("E_" + column.getName(), String.valueOf(column.getVisible()));
         }
         return httpclient.execute(
                 r.build(),
