@@ -1,6 +1,7 @@
 package com.gopai.pair.sdk.v1;
 
 import com.google.gson.Gson;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
@@ -11,6 +12,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.concurrent.TimeUnit;
 
 /**
  * The PAIClient allows access to Reports and database queries in a simple way for automation purposes.
@@ -20,6 +22,7 @@ import java.net.URI;
  */
 public class PAIClient implements AutoCloseable {
     private static final String BASE_URL = "https://www.paireports.com/myreports/";
+    public static final int SOCKET_TIMEOUT = (int) TimeUnit.MINUTES.toMillis(5);
 
     private String username;
     private String password;
@@ -43,9 +46,7 @@ public class PAIClient implements AutoCloseable {
                         .addParameter("Password", password)
                         .build(),
 
-                response -> {
-                    return StreamUtil.readIntoString(response.getEntity().getContent()).contains("Success");
-                }
+                response -> StreamUtil.readIntoString(response.getEntity().getContent()).contains("Success")
         );
     }
 
@@ -67,11 +68,10 @@ public class PAIClient implements AutoCloseable {
             r.addParameter("F_" + column.getName(), column.getFilter());
             r.addParameter("E_" + column.getName(), String.valueOf(column.getVisible()));
         }
+        r.setConfig(RequestConfig.custom().setSocketTimeout(SOCKET_TIMEOUT).build());
         return httpclient.execute(
                 r.build(),
-                response -> {
-                    return new ByteArrayInputStream(StreamUtil.read(response.getEntity().getContent()));
-                }
+                response -> new ByteArrayInputStream(StreamUtil.read(response.getEntity().getContent()))
         );
     }
 
@@ -100,9 +100,7 @@ public class PAIClient implements AutoCloseable {
                         .addParameter("GUID", GUID)
                         .build(),
 
-                r -> {
-                    return StreamUtil.readIntoString(r.getEntity().getContent());
-                }
+                r -> StreamUtil.readIntoString(r.getEntity().getContent())
         );
         if (response.contains("SuccessResponse"))
             return new Gson().fromJson(response, ReportConfig.class);
@@ -118,9 +116,7 @@ public class PAIClient implements AutoCloseable {
      */
     public InputStream runQuery(String query) throws IOException {
         return httpclient.execute(createQueryHttpRequest(query),
-                response -> {
-                    return new ByteArrayInputStream(StreamUtil.read(response.getEntity().getContent()));
-                }
+                response -> new ByteArrayInputStream(StreamUtil.read(response.getEntity().getContent()))
         );
     }
 
@@ -185,6 +181,7 @@ public class PAIClient implements AutoCloseable {
                 .setHeader("User-Agent", "Mozilla/5.0")
                 .setHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
                 .setHeader("PAIClient-SDK", "1.0.0")
+                .setConfig(RequestConfig.custom().setSocketTimeout(SOCKET_TIMEOUT).build())
                 .setUri(URI.create(BASE_URL + endpoint));
     }
 
